@@ -1,6 +1,6 @@
-# 🧶 Crochê Tracker
+# 🧶 Pixel Arte de Croche
 
-Um sites simples para ajudar amantes do pixel croche a acompanhar gráficos de tapeçaria de forma visual e interativa.
+Um site simples para ajudar amantes do pixel croche a acompanhar gráficos de tapeçaria de forma visual e interativa.
 
 ## ✨ Funcionalidades
 
@@ -8,7 +8,6 @@ Um sites simples para ajudar amantes do pixel croche a acompanhar gráficos de t
 - 🎨 Conversão automática para grid colorido
 - ✅ Marcação de pontos concluídos
 - 📍 Identificação de carreira e ponto atual
-- 🔦 Destaque da carreira ativa
 
 ## 🚀 Como usar
 
@@ -17,17 +16,17 @@ Um sites simples para ajudar amantes do pixel croche a acompanhar gráficos de t
 3. Clique nos quadrados conforme for crocheando
 4. Acompanhe sua posição em tempo real
 
-## 🛠️ Tecnologias utilizadas
+## 🛠️ Sistemas utilizados
 
 - HTML5
 - CSS3
-- JavaScript (Vanilla)
+- JavaScript
 
 ## 🎯 Objetivo do projeto
 
 Este projeto foi desenvolvido com foco em:
 
-- Resolver um problema real de acompanhamento de crochê
+- Resolver um problema pessoal de acompanhamento de crochê
 - Praticar lógica de programação e manipulação de imagem
 - Criar uma ferramenta útil e acessível em português
 
