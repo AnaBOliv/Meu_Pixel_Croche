@@ -1,19 +1,24 @@
+// principais
 const upload = document.getElementById("upload");
 const gridContainer = document.getElementById("grid");
 const info = document.getElementById("info");
 
+// dados do grid
 let gridData = [];
-let gridSize = 30; // tamanho do grid (30x30)
+let gridSize = 30;
+let cellSize = 15;
 
-// 📥 Quando o usuário envia uma imagem
-upload.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    processImage(file);
-  }
-});
+// 📥 Upload de imagem
+if (upload) {
+  upload.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      processImage(file);
+    }
+  });
+}
 
-// 🖼️ Converte imagem em grid de cores
+// 🖼️ Processar imagem
 function processImage(file) {
   const img = new Image();
   const canvas = document.createElement("canvas");
@@ -23,7 +28,6 @@ function processImage(file) {
     canvas.width = gridSize;
     canvas.height = gridSize;
 
-    // desenha imagem reduzida no canvas
     ctx.drawImage(img, 0, 0, gridSize, gridSize);
 
     const imageData = ctx.getImageData(0, 0, gridSize, gridSize).data;
@@ -40,12 +44,11 @@ function processImage(file) {
         const g = imageData[index + 1];
         const b = imageData[index + 2];
 
-        // salva cor do pixel
         row.push({
-          r: r,
-          g: g,
-          b: b,
-          done: false // controle de progresso
+          r,
+          g,
+          b,
+          done: false
         });
       }
 
@@ -58,39 +61,74 @@ function processImage(file) {
   img.src = URL.createObjectURL(file);
 }
 
-// 🎨 Renderiza o grid na tela
+// 🎨 Renderizar grid
 function renderGrid() {
+  if (!gridContainer) return;
+
   gridContainer.innerHTML = "";
 
-  // define quantidade de colunas
-  gridContainer.style.gridTemplateColumns = `repeat(${gridSize}, 15px)`;
+  gridContainer.style.gridTemplateColumns = `repeat(${gridSize}, ${cellSize}px)`;
 
   gridData.forEach((row, y) => {
     row.forEach((cell, x) => {
       const div = document.createElement("div");
       div.classList.add("cell");
 
-      // 🎨 cor original da imagem
+      // tamanho dinâmico (zoom)
+      div.style.width = cellSize + "px";
+      div.style.height = cellSize + "px";
+
+      // cor do pixel
       div.style.backgroundColor = `rgb(${cell.r}, ${cell.g}, ${cell.b})`;
 
-      // se já estiver marcado
+      // se já marcado
       if (cell.done) {
         div.classList.add("done");
       }
 
-      // clique no quadrado
+      // clique
       div.addEventListener("click", () => {
         cell.done = !cell.done;
         div.classList.toggle("done");
 
-        // atualiza info
-        const carreira = y + 1;
-        const ponto = x + 1;
+        destacarLinha(y);
 
-        info.textContent = `Carreira: ${carreira} | Ponto: ${ponto}`;
+        if (info) {
+          info.textContent = `Carreira: ${y + 1} | Ponto: ${x + 1}`;
+        }
       });
 
       gridContainer.appendChild(div);
     });
   });
+}
+
+// 🔦 Destacar linha atual
+function destacarLinha(linhaSelecionada) {
+  const cells = document.querySelectorAll(".cell");
+
+  cells.forEach((cell, index) => {
+    const linha = Math.floor(index / gridSize);
+
+    cell.classList.remove("highlight-row", "dimmed");
+
+    if (linha === linhaSelecionada) {
+      cell.classList.add("highlight-row");
+    } else {
+      cell.classList.add("dimmed");
+    }
+  });
+}
+
+// 🔍 Zoom
+function zoomIn() {
+  cellSize += 5;
+  renderGrid();
+}
+
+function zoomOut() {
+  if (cellSize > 5) {
+    cellSize -= 5;
+    renderGrid();
+  }
 }
