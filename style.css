@@ -1,3 +1,20 @@
+.home {
+  background: linear-gradient(135deg, #1e1e2f, #2c2c3e);
+  color: white;
+  text-align: center;
+  padding-top: 100px;
+}
+
+.botao {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 15px 25px;
+  background: #00e5ff;
+  color: black;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
 body {
   font-family: Arial;
   text-align: center;
