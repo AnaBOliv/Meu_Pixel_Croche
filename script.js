@@ -61,7 +61,32 @@ function processImage(file) {
 // 🎨 Renderiza o grid na tela
 function renderGrid() {
   gridContainer.innerHTML = "";
+  gridContainer.style.gridTemplateColumns = `repeat(${gridSize}, 15px)`;
 
+  gridData.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      const div = document.createElement("div");
+      div.classList.add("cell");
+
+      div.style.backgroundColor = `rgb(${cell.r}, ${cell.g}, ${cell.b})`;
+
+      if (cell.done) {
+        div.classList.add("done");
+      }
+
+      div.addEventListener("click", () => {
+        cell.done = !cell.done;
+        div.classList.toggle("done");
+
+        destacarLinha(y);
+
+        info.textContent = `Carreira: ${y + 1} | Ponto: ${x + 1}`;
+      });
+
+      gridContainer.appendChild(div);
+    });
+  });
+}
   // define quantidade de colunas
   gridContainer.style.gridTemplateColumns = `repeat(${gridSize}, 15px)`;
 
@@ -92,5 +117,20 @@ function renderGrid() {
 
       gridContainer.appendChild(div);
     });
+  });
+}
+function destacarLinha(linhaSelecionada) {
+  const cells = document.querySelectorAll(".cell");
+
+  cells.forEach((cell, index) => {
+    const linha = Math.floor(index / gridSize);
+
+    cell.classList.remove("highlight-row", "dimmed");
+
+    if (linha === linhaSelecionada) {
+      cell.classList.add("highlight-row");
+    } else {
+      cell.classList.add("dimmed");
+    }
   });
 }
