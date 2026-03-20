@@ -1,5 +1,5 @@
 .home {
-  background: linear-gradient(135deg, #1e1e2f, #2c2c3e);
+  background: linear-gradient(135deg, #0f7476, #00555a);
   color: white;
   text-align: center;
   padding-top: 100px;
@@ -9,7 +9,7 @@
   display: inline-block;
   margin-top: 30px;
   padding: 15px 25px;
-  background: #00e5ff;
+  background: #dfaf34;
   color: black;
   text-decoration: none;
   border-radius: 8px;
