@@ -1,0 +1,39 @@
+body {
+  font-family: Arial;
+  text-align: center;
+  background-color: #1e1e2f; /* fundo */
+  color: #ffffff; /* cor da fonte */
+}
+
+h1 {
+  color: #ffcc70;
+}
+
+#info {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #00e5ff;
+}
+
+#grid {
+  display: grid;
+  gap: 2px;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #2c2c3e;
+
+  /* 🧩 contorno do “quadro” */
+  border: 3px solid #555;
+  border-radius: 10px;
+}
+
+.cell {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.done {
+  outline: 2px solid #00ff88;
+}
