@@ -37,3 +37,10 @@ h1 {
 .done {
   outline: 2px solid #00ff88;
 }
+.highlight-row {
+  outline: 2px solid yellow;
+}
+
+.dimmed {
+  opacity: 0.3;
+}
