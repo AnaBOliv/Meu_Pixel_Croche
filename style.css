@@ -131,3 +131,12 @@ footer {
 a {
   color: var(--cor-texto);
 }
+
+.intro {
+  max-width: 600px;
+  margin: 20px auto;
+  background: #ffffff10;
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+}
