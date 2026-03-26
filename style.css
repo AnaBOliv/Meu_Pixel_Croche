@@ -2,34 +2,34 @@
   background: linear-gradient(135deg, #0f7476, #00555a);
   color: white;
   text-align: center;
-  padding-top: 100px;
+  padding-top: 50px;
 }
 
 .botao {
   display: inline-block;
   margin-top: 30px;
   padding: 15px 25px;
-  background: #dfaf34;
-  color: black;
+  background: #222222;
+  color: #C2D8C4;
   text-decoration: none;
   border-radius: 8px;
   font-weight: bold;
 }
 body {
-  font-family: Arial;
+  font-family: Bell MT;
   text-align: center;
-  background-color: #1e1e2f; /* fundo */
-  color: #ffffff; /* cor da fonte */
+  background-color: #28443F; /* fundo */
+  color: #EFE9E0; /* cor da fonte */
 }
 
 h1 {
-  color: #ffcc70;
+  color: #EFE9E0;
 }
 
 #info {
   margin-top: 10px;
   font-weight: bold;
-  color: #00e5ff;
+  color: #EFE9E0;
 }
 
 #grid {
@@ -42,7 +42,7 @@ h1 {
 
   /* 🧩 contorno do “quadro” */
   border: 3px solid #555;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 .cell {
