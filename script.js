@@ -15,8 +15,17 @@ let cellSize = 15;
 let gridWidth = 50;
 let gridHeight = 50;
 
-// controle de qualidade (quanto maior = mais definição)
 let qualidade = 50;
+
+// ==========================
+// PALETA DE CORES
+// ==========================
+const PALETA = [
+  { r: 255, g: 255, b: 255 }, // branco
+  { r: 0, g: 0, b: 0 },       // preto
+  { r: 200, g: 200, b: 200 }, // cinza claro
+  { r: 120, g: 120, b: 120 }  // cinza escuro
+];
 
 // ==========================
 // INICIALIZAÇÃO
@@ -31,7 +40,7 @@ window.onload = () => {
 if (qualidadeInput) {
   qualidadeInput.addEventListener("input", (e) => {
     qualidade = parseInt(e.target.value);
-    carregarImagemDaGaleria(); // recarrega com nova qualidade
+    carregarImagemDaGaleria();
   });
 }
 
@@ -65,30 +74,42 @@ function carregarImagemDaGaleria() {
   if (!caminho) return;
 
   const img = new Image();
-
   img.onload = () => processarImagem(img);
-
   img.src = caminho;
 }
 
 // ==========================
-// FILTRO DE COR (ANTI-LINHAS)
+// COR MAIS PRÓXIMA
 // ==========================
-function limparCor(r, g, b) {
-  // remove linhas escuras (grade)
-  const media = (r + g + b) / 3;
+function corMaisProxima(r, g, b) {
+  let melhor = PALETA[0];
+  let menorDistancia = Infinity;
 
-  if (media < 40) return { r: 255, g: 255, b: 255 }; // ignora preto
+  PALETA.forEach(cor => {
+    const dist =
+      Math.pow(r - cor.r, 2) +
+      Math.pow(g - cor.g, 2) +
+      Math.pow(b - cor.b, 2);
 
-  return {
-    r: Math.round(r / 64) * 64,
-    g: Math.round(g / 64) * 64,
-    b: Math.round(b / 64) * 64
-  };
+    if (dist < menorDistancia) {
+      menorDistancia = dist;
+      melhor = cor;
+    }
+  });
+
+  return melhor;
 }
 
 // ==========================
-// PROCESSAMENTO INTELIGENTE
+// DETECTAR LINHAS
+// ==========================
+function ehLinha(r, g, b) {
+  const media = (r + g + b) / 3;
+  return media < 90; // ajuste fino aqui
+}
+
+// ==========================
+// PROCESSAMENTO DA IMAGEM
 // ==========================
 function processarImagem(img) {
   const canvas = document.createElement("canvas");
@@ -103,7 +124,6 @@ function processarImagem(img) {
   canvas.height = gridHeight;
 
   ctx.imageSmoothingEnabled = false;
-
   ctx.drawImage(img, 0, 0, gridWidth, gridHeight);
 
   const imageData = ctx.getImageData(0, 0, gridWidth, gridHeight).data;
@@ -120,7 +140,19 @@ function processarImagem(img) {
       let g = imageData[index + 1];
       let b = imageData[index + 2];
 
-      const cor = limparCor(r, g, b);
+      // 🔥 remove linhas
+      if (ehLinha(r, g, b)) {
+        row.push({
+          r: 255,
+          g: 255,
+          b: 255,
+          done: false
+        });
+        continue;
+      }
+
+      // 🎯 aplica paleta
+      const cor = corMaisProxima(r, g, b);
 
       row.push({
         r: cor.r,
@@ -137,13 +169,14 @@ function processarImagem(img) {
 }
 
 // ==========================
-// RENDER
+// RENDERIZAÇÃO
 // ==========================
 function renderGrid() {
   if (!gridContainer) return;
 
   gridContainer.innerHTML = "";
 
+  gridContainer.style.display = "grid";
   gridContainer.style.gridTemplateColumns =
     `repeat(${gridWidth}, ${cellSize}px)`;
 
