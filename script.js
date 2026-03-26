@@ -233,3 +233,15 @@ function usarModelo(caminho) {
   localStorage.setItem("imagemModelo", caminho);
   window.location.href = "app.html";
 }
+
+
+function iniciarProjeto() {
+  const imagem = localStorage.getItem("imagemModelo");
+
+  if (!imagem) {
+    alert("Escolha uma imagem primeiro!");
+    return;
+  }
+
+  window.location.href = "app.html";
+}
