@@ -1,24 +1,27 @@
-// principais
+// ELEMENTOS
 const upload = document.getElementById("upload");
 const gridContainer = document.getElementById("grid");
 const info = document.getElementById("info");
 
-// dados do grid
+// GRID
 let gridData = [];
 let gridSize = 30;
 let cellSize = 15;
 
-// 📥 Upload de imagem
+// PERFIL LOCAL
+let perfil = JSON.parse(localStorage.getItem("perfil")) || {
+  projetos: []
+};
+
+// UPLOAD
 if (upload) {
   upload.addEventListener("change", (event) => {
     const file = event.target.files[0];
-    if (file) {
-      processImage(file);
-    }
+    if (file) processImage(file);
   });
 }
 
-// 🖼️ Processar imagem
+// PROCESSAR IMAGEM
 function processImage(file) {
   const img = new Image();
   const canvas = document.createElement("canvas");
@@ -29,7 +32,6 @@ function processImage(file) {
     canvas.height = gridSize;
 
     ctx.drawImage(img, 0, 0, gridSize, gridSize);
-
     const imageData = ctx.getImageData(0, 0, gridSize, gridSize).data;
 
     gridData = [];
@@ -40,14 +42,10 @@ function processImage(file) {
       for (let x = 0; x < gridSize; x++) {
         const index = (y * gridSize + x) * 4;
 
-        const r = imageData[index];
-        const g = imageData[index + 1];
-        const b = imageData[index + 2];
-
         row.push({
-          r,
-          g,
-          b,
+          r: imageData[index],
+          g: imageData[index + 1],
+          b: imageData[index + 2],
           done: false
         });
       }
@@ -61,66 +59,39 @@ function processImage(file) {
   img.src = URL.createObjectURL(file);
 }
 
-// 🎨 Renderizar grid
+// RENDER
 function renderGrid() {
   if (!gridContainer) return;
 
   gridContainer.innerHTML = "";
-
   gridContainer.style.gridTemplateColumns = `repeat(${gridSize}, ${cellSize}px)`;
 
   gridData.forEach((row, y) => {
     row.forEach((cell, x) => {
       const div = document.createElement("div");
-      div.classList.add("cell");
 
-      // tamanho dinâmico (zoom)
+      div.classList.add("cell");
       div.style.width = cellSize + "px";
       div.style.height = cellSize + "px";
+      div.style.backgroundColor = `rgb(${cell.r},${cell.g},${cell.b})`;
 
-      // cor do pixel
-      div.style.backgroundColor = `rgb(${cell.r}, ${cell.g}, ${cell.b})`;
+      if (cell.done) div.classList.add("done");
 
-      // se já marcado
-      if (cell.done) {
-        div.classList.add("done");
-      }
-
-      // clique
-      div.addEventListener("click", () => {
+      div.onclick = () => {
         cell.done = !cell.done;
         div.classList.toggle("done");
-
-        destacarLinha(y);
 
         if (info) {
           info.textContent = `Carreira: ${y + 1} | Ponto: ${x + 1}`;
         }
-      });
+      };
 
       gridContainer.appendChild(div);
     });
   });
 }
 
-// 🔦 Destacar linha atual
-function destacarLinha(linhaSelecionada) {
-  const cells = document.querySelectorAll(".cell");
-
-  cells.forEach((cell, index) => {
-    const linha = Math.floor(index / gridSize);
-
-    cell.classList.remove("highlight-row", "dimmed");
-
-    if (linha === linhaSelecionada) {
-      cell.classList.add("highlight-row");
-    } else {
-      cell.classList.add("dimmed");
-    }
-  });
-}
-
-// 🔍 Zoom
+// ZOOM
 function zoomIn() {
   cellSize += 5;
   renderGrid();
@@ -131,4 +102,17 @@ function zoomOut() {
     cellSize -= 5;
     renderGrid();
   }
+}
+
+// SALVAR PROJETO
+function salvarProjeto() {
+  perfil.projetos.push(gridData);
+  localStorage.setItem("perfil", JSON.stringify(perfil));
+  alert("Projeto salvo!");
+}
+
+// GALERIA → APP
+function usarModelo(src) {
+  localStorage.setItem("modeloSelecionado", src);
+  window.location.href = "app.html";
 }
