@@ -9,8 +9,11 @@ const info = document.getElementById("info");
 // CONFIGURAÇÕES
 // ==========================
 let gridData = [];
-let gridSize = 30;
 let cellSize = 15;
+
+// 👇 você pode mudar isso livremente
+let gridWidth = 50;
+let gridHeight = 50;
 
 // ==========================
 // INICIALIZAÇÃO
@@ -20,14 +23,12 @@ window.onload = () => {
 };
 
 // ==========================
-// UPLOAD DE IMAGEM
+// UPLOAD
 // ==========================
 if (upload) {
   upload.addEventListener("change", (event) => {
     const file = event.target.files[0];
-    if (file) {
-      carregarImagemArquivo(file);
-    }
+    if (file) carregarImagemArquivo(file);
   });
 }
 
@@ -64,31 +65,46 @@ function carregarImagemDaGaleria() {
 }
 
 // ==========================
-// PROCESSAR IMAGEM (PADRÃO)
+// REDUZIR CORES (OPCIONAL)
+// ==========================
+function simplificarCor(valor) {
+  return Math.round(valor / 64) * 64;
+}
+
+// ==========================
+// PROCESSAR IMAGEM
 // ==========================
 function processarImagem(img) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
-  canvas.width = gridSize;
-  canvas.height = gridSize;
+  // 🔥 manter proporção
+  const proporcao = img.height / img.width;
 
-  ctx.drawImage(img, 0, 0, gridSize, gridSize);
+  gridHeight = Math.floor(gridWidth * proporcao);
 
-  const imageData = ctx.getImageData(0, 0, gridSize, gridSize).data;
+  canvas.width = gridWidth;
+  canvas.height = gridHeight;
+
+  // 🔥 ESSENCIAL (remove borrão)
+  ctx.imageSmoothingEnabled = false;
+
+  ctx.drawImage(img, 0, 0, gridWidth, gridHeight);
+
+  const imageData = ctx.getImageData(0, 0, gridWidth, gridHeight).data;
 
   gridData = [];
 
-  for (let y = 0; y < gridSize; y++) {
+  for (let y = 0; y < gridHeight; y++) {
     let row = [];
 
-    for (let x = 0; x < gridSize; x++) {
-      const index = (y * gridSize + x) * 4;
+    for (let x = 0; x < gridWidth; x++) {
+      const index = (y * gridWidth + x) * 4;
 
       row.push({
-        r: imageData[index],
-        g: imageData[index + 1],
-        b: imageData[index + 2],
+        r: simplificarCor(imageData[index]),
+        g: simplificarCor(imageData[index + 1]),
+        b: simplificarCor(imageData[index + 2]),
         done: false
       });
     }
@@ -108,7 +124,7 @@ function renderGrid() {
   gridContainer.innerHTML = "";
 
   gridContainer.style.gridTemplateColumns =
-    `repeat(${gridSize}, ${cellSize}px)`;
+    `repeat(${gridWidth}, ${cellSize}px)`;
 
   gridData.forEach((row, y) => {
     row.forEach((cell, x) => {
@@ -122,9 +138,7 @@ function renderGrid() {
       div.style.backgroundColor =
         `rgb(${cell.r},${cell.g},${cell.b})`;
 
-      if (cell.done) {
-        div.classList.add("done");
-      }
+      if (cell.done) div.classList.add("done");
 
       div.onclick = () => {
         cell.done = !cell.done;
@@ -132,7 +146,7 @@ function renderGrid() {
 
         if (info) {
           info.textContent =
-            `Carreira: ${y + 1} | Ponto: ${x + 1}`;
+            `Linha: ${y + 1} | Coluna: ${x + 1}`;
         }
       };
 
