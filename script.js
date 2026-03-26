@@ -15,7 +15,7 @@ let cellSize = 15;
 let gridWidth = 50;
 let gridHeight = 50;
 
-let qualidade = 50;
+let qualidade = 80;
 
 // ==========================
 // PALETA DE CORES
@@ -25,6 +25,8 @@ const PALETA = [
   { r: 0, g: 0, b: 0 },       // preto
   { r: 200, g: 200, b: 200 }, // cinza claro
   { r: 120, g: 120, b: 120 }  // cinza escuro
+  { r: 255, g: 0, b: 0 }, // vermelho
+{ r: 0, g: 0, b: 255 }, // azul
 ];
 
 // ==========================
@@ -105,7 +107,7 @@ function corMaisProxima(r, g, b) {
 // ==========================
 function ehLinha(r, g, b) {
   const media = (r + g + b) / 3;
-  return media < 90; // ajuste fino aqui
+  return media < 110; // ajuste fino aqui
 }
 
 // ==========================
