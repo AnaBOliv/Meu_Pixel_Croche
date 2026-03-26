@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<label>Qualidade:</label>
-<input type="range" id="qualidade" min="20" max="100" value="50">
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -17,33 +15,28 @@
     <h1>🧶 Pixel Crochê</h1>
 
     <p>
-      Ferramenta para acompanhar seu projeto de tapeçaria de crochê ponto a ponto
+      Ferramenta para acompanhar seu projeto de tapeçaria
     </p>
+
+    <label>Qualidade:</label>
+    <input type="range" id="qualidade" min="20" max="100" value="50">
 
     <input type="file" id="upload">
 
-    <p id="info">Carreira: - | Ponto: -</p>
+    <p id="info">Linha: - | Coluna: -</p>
 
-   <button onclick="limparProgresso()">Limpar Progresso</button> 
-    <button onclick="apagarImagem()">Apagar Imagem Selecionada</button>
+    <button onclick="limparProgresso()">Limpar Progresso</button>
+    <button onclick="apagarImagem()">Apagar Imagem</button>
 
     <div>
       <button onclick="zoomIn()">➕ Zoom</button>
       <button onclick="zoomOut()">➖ Zoom</button>
-      <button onclick="salvarProjeto()">💾 Salvar</button>
     </div>
 
     <div id="grid"></div>
 
-    <h3>Continue criando!</h3>
-
   </div>
 
-  <footer>
-    <p>Ana B.</p>
-  </footer>
-
   <script src="script.js"></script>
-
 </body>
 </html>
