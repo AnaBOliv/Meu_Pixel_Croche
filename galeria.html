@@ -8,19 +8,40 @@
 
 <body>
 
-  <div class="container">
-    <a href="index.html" class="botao">⬅ Voltar</a>
+<div class="container">
 
-    <h1>🧶 Galeria de Ideias</h1>
+  <a href="index.html" class="botao">⬅ Voltar</a>
 
-    <div class="galeria">
-      <img src="img1.png" onclick="usarModelo(this.src)">
-      <img src="img2.png" onclick="usarModelo(this.src)">
-      <img src="img3.png" onclick="usarModelo(this.src)">
+  <h1>Galeria de Ideias</h1>
+
+  <div class="galeria">
+
+    <div class="card">
+      <img src="img/coracao.png">
+      <button onclick="usarModelo('img/coracao.png')">
+        Iniciar Projeto
+      </button>
     </div>
+
+    <div class="card">
+      <img src="img/flor.png">
+      <button onclick="usarModelo('img/flor.png')">
+        Iniciar Projeto
+      </button>
+    </div>
+
+    <div class="card">
+      <img src="img/gatinho.png">
+      <button onclick="usarModelo('img/gatinho.png')">
+        Iniciar Projeto
+      </button>
+    </div>
+
   </div>
 
-  <script src="script.js"></script>
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>
