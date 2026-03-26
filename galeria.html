@@ -14,39 +14,42 @@
 
   <h1>Galeria de Ideias</h1>
 
+  <p>Escolha uma imagem para iniciar seu projeto:</p>
+
   <div class="galeria">
 
+    <!-- ITEM -->
     <div class="card">
-      <img src="img/mariposa.jpg">
-      <button onclick="usarModelo('img/mariposa.jpg')">
+      <img src="img/mariposa.jpg" alt="Mariposa">
+      <button onclick="selecionarImagem('img/mariposa.jpg')">
         Iniciar Projeto
       </button>
     </div>
 
     <div class="card">
-      <img src="img/logo_batman.jpg">
-      <button onclick="usarModelo('img/logo_batman.jpg')">
+      <img src="img/logo_batman.jpg" alt="Batman">
+      <button onclick="selecionarImagem('img/logo_batman.jpg')">
         Iniciar Projeto
       </button>
     </div>
 
     <div class="card">
-      <img src="img/tartaruga.jpg">
-      <button onclick="usarModelo('img/tartaruga.jpg')">
+      <img src="img/tartaruga.jpg" alt="Tartaruga">
+      <button onclick="selecionarImagem('img/tartaruga.jpg')">
         Iniciar Projeto
       </button>
     </div>
 
     <div class="card">
-      <img src="img/tubaraoBaleia.jpg">
-      <button onclick="usarModelo('img/tubaraoBaleia.jpg')">
+      <img src="img/tubaraoBaleia.jpg" alt="Tubarão Baleia">
+      <button onclick="selecionarImagem('img/tubaraoBaleia.jpg')">
         Iniciar Projeto
       </button>
     </div>
-    
+
     <div class="card">
-      <img src="img/CaudaBaleia.jpg">
-      <button onclick="usarModelo('img/CaudaBaleia.jpg')">
+      <img src="img/CaudaBaleia.jpg" alt="Cauda de Baleia">
+      <button onclick="selecionarImagem('img/CaudaBaleia.jpg')">
         Iniciar Projeto
       </button>
     </div>
@@ -55,7 +58,24 @@
 
 </div>
 
-<script src="script.js"></script>
+<script>
+  function selecionarImagem(caminho) {
+    console.log("Imagem selecionada:", caminho);
+
+    // salva no navegador
+    localStorage.setItem("imagemModelo", caminho);
+
+    // pequena validação
+    const teste = localStorage.getItem("imagemModelo");
+    if (!teste) {
+      alert("Erro ao salvar imagem!");
+      return;
+    }
+
+    // redireciona
+    window.location.href = "app.html";
+  }
+</script>
 
 </body>
 </html>
