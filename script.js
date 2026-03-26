@@ -4,6 +4,7 @@
 const upload = document.getElementById("upload");
 const gridContainer = document.getElementById("grid");
 const info = document.getElementById("info");
+const qualidadeInput = document.getElementById("qualidade");
 
 // ==========================
 // CONFIGURAÇÕES
@@ -11,9 +12,11 @@ const info = document.getElementById("info");
 let gridData = [];
 let cellSize = 15;
 
-// 👇 você pode mudar isso livremente
 let gridWidth = 50;
 let gridHeight = 50;
+
+// controle de qualidade (quanto maior = mais definição)
+let qualidade = 50;
 
 // ==========================
 // INICIALIZAÇÃO
@@ -21,6 +24,16 @@ let gridHeight = 50;
 window.onload = () => {
   carregarImagemDaGaleria();
 };
+
+// ==========================
+// CONTROLE DE QUALIDADE
+// ==========================
+if (qualidadeInput) {
+  qualidadeInput.addEventListener("input", (e) => {
+    qualidade = parseInt(e.target.value);
+    carregarImagemDaGaleria(); // recarrega com nova qualidade
+  });
+}
 
 // ==========================
 // UPLOAD
@@ -33,7 +46,7 @@ if (upload) {
 }
 
 // ==========================
-// CARREGAR IMAGEM (UPLOAD)
+// CARREGAR IMAGEM
 // ==========================
 function carregarImagemArquivo(file) {
   const img = new Image();
@@ -47,46 +60,48 @@ function carregarImagemArquivo(file) {
   img.src = url;
 }
 
-// ==========================
-// CARREGAR IMAGEM (GALERIA)
-// ==========================
 function carregarImagemDaGaleria() {
   const caminho = localStorage.getItem("imagemModelo");
-
   if (!caminho) return;
 
   const img = new Image();
 
-  img.onload = () => {
-    processarImagem(img);
-  };
+  img.onload = () => processarImagem(img);
 
   img.src = caminho;
 }
 
 // ==========================
-// REDUZIR CORES (OPCIONAL)
+// FILTRO DE COR (ANTI-LINHAS)
 // ==========================
-function simplificarCor(valor) {
-  return Math.round(valor / 64) * 64;
+function limparCor(r, g, b) {
+  // remove linhas escuras (grade)
+  const media = (r + g + b) / 3;
+
+  if (media < 40) return { r: 255, g: 255, b: 255 }; // ignora preto
+
+  return {
+    r: Math.round(r / 64) * 64,
+    g: Math.round(g / 64) * 64,
+    b: Math.round(b / 64) * 64
+  };
 }
 
 // ==========================
-// PROCESSAR IMAGEM
+// PROCESSAMENTO INTELIGENTE
 // ==========================
 function processarImagem(img) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
-  // 🔥 manter proporção
   const proporcao = img.height / img.width;
 
+  gridWidth = qualidade;
   gridHeight = Math.floor(gridWidth * proporcao);
 
   canvas.width = gridWidth;
   canvas.height = gridHeight;
 
-  // 🔥 ESSENCIAL (remove borrão)
   ctx.imageSmoothingEnabled = false;
 
   ctx.drawImage(img, 0, 0, gridWidth, gridHeight);
@@ -101,10 +116,16 @@ function processarImagem(img) {
     for (let x = 0; x < gridWidth; x++) {
       const index = (y * gridWidth + x) * 4;
 
+      let r = imageData[index];
+      let g = imageData[index + 1];
+      let b = imageData[index + 2];
+
+      const cor = limparCor(r, g, b);
+
       row.push({
-        r: simplificarCor(imageData[index]),
-        g: simplificarCor(imageData[index + 1]),
-        b: simplificarCor(imageData[index + 2]),
+        r: cor.r,
+        g: cor.g,
+        b: cor.b,
         done: false
       });
     }
@@ -116,7 +137,7 @@ function processarImagem(img) {
 }
 
 // ==========================
-// RENDER GRID
+// RENDER
 // ==========================
 function renderGrid() {
   if (!gridContainer) return;
@@ -171,7 +192,7 @@ function zoomOut() {
 }
 
 // ==========================
-// GALERIA → APP
+// GALERIA
 // ==========================
 function usarModelo(caminho) {
   localStorage.setItem("imagemModelo", caminho);
