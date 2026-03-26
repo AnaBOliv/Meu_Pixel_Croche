@@ -1,88 +1,138 @@
+// ==========================
 // ELEMENTOS
+// ==========================
 const upload = document.getElementById("upload");
 const gridContainer = document.getElementById("grid");
 const info = document.getElementById("info");
 
-// GRID
+// ==========================
+// CONFIGURAÇÕES
+// ==========================
 let gridData = [];
 let gridSize = 30;
 let cellSize = 15;
 
-// PERFIL LOCAL
-let perfil = JSON.parse(localStorage.getItem("perfil")) || {
-  projetos: []
+// ==========================
+// INICIALIZAÇÃO
+// ==========================
+window.onload = () => {
+  carregarImagemDaGaleria();
 };
 
-// UPLOAD
+// ==========================
+// UPLOAD DE IMAGEM
+// ==========================
 if (upload) {
   upload.addEventListener("change", (event) => {
     const file = event.target.files[0];
-    if (file) processImage(file);
+    if (file) {
+      carregarImagemArquivo(file);
+    }
   });
 }
 
-// PROCESSAR IMAGEM
-function processImage(file) {
+// ==========================
+// CARREGAR IMAGEM (UPLOAD)
+// ==========================
+function carregarImagemArquivo(file) {
   const img = new Image();
+  const url = URL.createObjectURL(file);
+
+  img.onload = () => {
+    processarImagem(img);
+    URL.revokeObjectURL(url);
+  };
+
+  img.src = url;
+}
+
+// ==========================
+// CARREGAR IMAGEM (GALERIA)
+// ==========================
+function carregarImagemDaGaleria() {
+  const caminho = localStorage.getItem("imagemModelo");
+
+  if (!caminho) return;
+
+  const img = new Image();
+
+  img.onload = () => {
+    processarImagem(img);
+  };
+
+  img.src = caminho;
+}
+
+// ==========================
+// PROCESSAR IMAGEM (PADRÃO)
+// ==========================
+function processarImagem(img) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
-  img.onload = () => {
-    canvas.width = gridSize;
-    canvas.height = gridSize;
+  canvas.width = gridSize;
+  canvas.height = gridSize;
 
-    ctx.drawImage(img, 0, 0, gridSize, gridSize);
-    const imageData = ctx.getImageData(0, 0, gridSize, gridSize).data;
+  ctx.drawImage(img, 0, 0, gridSize, gridSize);
 
-    gridData = [];
+  const imageData = ctx.getImageData(0, 0, gridSize, gridSize).data;
 
-    for (let y = 0; y < gridSize; y++) {
-      let row = [];
+  gridData = [];
 
-      for (let x = 0; x < gridSize; x++) {
-        const index = (y * gridSize + x) * 4;
+  for (let y = 0; y < gridSize; y++) {
+    let row = [];
 
-        row.push({
-          r: imageData[index],
-          g: imageData[index + 1],
-          b: imageData[index + 2],
-          done: false
-        });
-      }
+    for (let x = 0; x < gridSize; x++) {
+      const index = (y * gridSize + x) * 4;
 
-      gridData.push(row);
+      row.push({
+        r: imageData[index],
+        g: imageData[index + 1],
+        b: imageData[index + 2],
+        done: false
+      });
     }
 
-    renderGrid();
-  };
+    gridData.push(row);
+  }
 
-  img.src = URL.createObjectURL(file);
+  renderGrid();
 }
 
-// RENDER
+// ==========================
+// RENDER GRID
+// ==========================
 function renderGrid() {
   if (!gridContainer) return;
 
   gridContainer.innerHTML = "";
-  gridContainer.style.gridTemplateColumns = `repeat(${gridSize}, ${cellSize}px)`;
+
+  gridContainer.style.gridTemplateColumns =
+    `repeat(${gridSize}, ${cellSize}px)`;
 
   gridData.forEach((row, y) => {
     row.forEach((cell, x) => {
       const div = document.createElement("div");
 
       div.classList.add("cell");
+
       div.style.width = cellSize + "px";
       div.style.height = cellSize + "px";
-      div.style.backgroundColor = `rgb(${cell.r},${cell.g},${cell.b})`;
 
-      if (cell.done) div.classList.add("done");
+      div.style.backgroundColor =
+        `rgb(${cell.r},${cell.g},${cell.b})`;
+
+      if (cell.done) {
+        div.classList.add("done");
+      }
 
       div.onclick = () => {
         cell.done = !cell.done;
         div.classList.toggle("done");
 
         if (info) {
-          info.textContent = `Carreira: ${y + 1} | Ponto: ${x + 1}`;
+          info.textContent =
+            `Carreira: ${y + 1} | Ponto: ${x + 1}`;
         }
       };
 
@@ -91,7 +141,9 @@ function renderGrid() {
   });
 }
 
+// ==========================
 // ZOOM
+// ==========================
 function zoomIn() {
   cellSize += 5;
   renderGrid();
@@ -104,19 +156,10 @@ function zoomOut() {
   }
 }
 
-// SALVAR PROJETO
-function salvarProjeto() {
-  perfil.projetos.push(gridData);
-  localStorage.setItem("perfil", JSON.stringify(perfil));
-  alert("Projeto salvo!");
-}
-
+// ==========================
 // GALERIA → APP
-function usarModelo(src) {
-  localStorage.setItem("modeloSelecionado", src);
-  window.location.href = "app.html";
-}
-  function usarModelo(caminho) {
+// ==========================
+function usarModelo(caminho) {
   localStorage.setItem("imagemModelo", caminho);
   window.location.href = "app.html";
 }
