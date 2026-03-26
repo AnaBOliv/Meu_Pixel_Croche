@@ -115,8 +115,8 @@ function salvarProjeto() {
 function usarModelo(src) {
   localStorage.setItem("modeloSelecionado", src);
   window.location.href = "app.html";
+}
   function usarModelo(caminho) {
   localStorage.setItem("imagemModelo", caminho);
   window.location.href = "app.html";
-}
 }
