@@ -5,14 +5,17 @@
   <title>Pixel Crochê</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <div class="container">
 
+    <a href="index.html" class="botao">⬅ Voltar</a>
+
     <h1>🧶 Pixel Crochê</h1>
 
     <p>
-      Ferramenta para acompanhar seu projeto de tapeçaria de corhê ponto a ponto
+      Ferramenta para acompanhar seu projeto de tapeçaria de crochê ponto a ponto
     </p>
 
     <input type="file" id="upload">
@@ -22,6 +25,7 @@
     <div>
       <button onclick="zoomIn()">➕ Zoom</button>
       <button onclick="zoomOut()">➖ Zoom</button>
+      <button onclick="salvarProjeto()">💾 Salvar</button>
     </div>
 
     <div id="grid"></div>
@@ -31,7 +35,7 @@
   </div>
 
   <footer>
-    Ana B.
+    <p>Ana B.</p>
   </footer>
 
   <script src="script.js"></script>
