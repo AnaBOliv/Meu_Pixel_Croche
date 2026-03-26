@@ -245,3 +245,12 @@ function iniciarProjeto() {
 
   window.location.href = "app.html";
 }
+
+function usarModelo(caminho) {
+  localStorage.setItem("imagemModelo", caminho);
+  alert("Imagem selecionada!");
+}
+function apagarImagem() {
+  localStorage.removeItem("imagemModelo");
+  alert("Imagem removida!");
+}
