@@ -15,18 +15,18 @@ let cellSize = 15;
 let gridWidth = 50;
 let gridHeight = 50;
 
-let qualidade = 80;
+let qualidade = 50;
 
 // ==========================
-// PALETA DE CORES
+// PALETA (CORRIGIDA)
 // ==========================
 const PALETA = [
-  { r: 255, g: 255, b: 255 }, // branco
-  { r: 0, g: 0, b: 0 },       // preto
-  { r: 200, g: 200, b: 200 }, // cinza claro
-  { r: 120, g: 120, b: 120 }  // cinza escuro
-  { r: 255, g: 0, b: 0 }, // vermelho
-{ r: 0, g: 0, b: 255 }, // azul
+  { r: 255, g: 255, b: 255 },
+  { r: 0, g: 0, b: 0 },
+  { r: 200, g: 200, b: 200 },
+  { r: 120, g: 120, b: 120 },
+  { r: 255, g: 0, b: 0 },
+  { r: 0, g: 0, b: 255 }
 ];
 
 // ==========================
@@ -37,7 +37,7 @@ window.onload = () => {
 };
 
 // ==========================
-// CONTROLE DE QUALIDADE
+// QUALIDADE
 // ==========================
 if (qualidadeInput) {
   qualidadeInput.addEventListener("input", (e) => {
@@ -89,9 +89,9 @@ function corMaisProxima(r, g, b) {
 
   PALETA.forEach(cor => {
     const dist =
-      Math.pow(r - cor.r, 2) +
-      Math.pow(g - cor.g, 2) +
-      Math.pow(b - cor.b, 2);
+      (r - cor.r) ** 2 +
+      (g - cor.g) ** 2 +
+      (b - cor.b) ** 2;
 
     if (dist < menorDistancia) {
       menorDistancia = dist;
@@ -106,12 +106,11 @@ function corMaisProxima(r, g, b) {
 // DETECTAR LINHAS
 // ==========================
 function ehLinha(r, g, b) {
-  const media = (r + g + b) / 3;
-  return media < 110; // ajuste fino aqui
+  return (r + g + b) / 3 < 110;
 }
 
 // ==========================
-// PROCESSAMENTO DA IMAGEM
+// PROCESSAMENTO
 // ==========================
 function processarImagem(img) {
   const canvas = document.createElement("canvas");
@@ -136,32 +135,20 @@ function processarImagem(img) {
     let row = [];
 
     for (let x = 0; x < gridWidth; x++) {
-      const index = (y * gridWidth + x) * 4;
+      const i = (y * gridWidth + x) * 4;
 
-      let r = imageData[index];
-      let g = imageData[index + 1];
-      let b = imageData[index + 2];
+      let r = imageData[i];
+      let g = imageData[i + 1];
+      let b = imageData[i + 2];
 
-      // 🔥 remove linhas
       if (ehLinha(r, g, b)) {
-        row.push({
-          r: 255,
-          g: 255,
-          b: 255,
-          done: false
-        });
+        row.push({ r: 255, g: 255, b: 255, done: false });
         continue;
       }
 
-      // 🎯 aplica paleta
       const cor = corMaisProxima(r, g, b);
 
-      row.push({
-        r: cor.r,
-        g: cor.g,
-        b: cor.b,
-        done: false
-      });
+      row.push({ ...cor, done: false });
     }
 
     gridData.push(row);
@@ -171,14 +158,12 @@ function processarImagem(img) {
 }
 
 // ==========================
-// RENDERIZAÇÃO
+// RENDER
 // ==========================
 function renderGrid() {
   if (!gridContainer) return;
 
   gridContainer.innerHTML = "";
-
-  gridContainer.style.display = "grid";
   gridContainer.style.gridTemplateColumns =
     `repeat(${gridWidth}, ${cellSize}px)`;
 
@@ -187,10 +172,8 @@ function renderGrid() {
       const div = document.createElement("div");
 
       div.classList.add("cell");
-
       div.style.width = cellSize + "px";
       div.style.height = cellSize + "px";
-
       div.style.backgroundColor =
         `rgb(${cell.r},${cell.g},${cell.b})`;
 
@@ -227,13 +210,12 @@ function zoomOut() {
 }
 
 // ==========================
-// GALERIA
+// AÇÕES
 // ==========================
 function usarModelo(caminho) {
   localStorage.setItem("imagemModelo", caminho);
   window.location.href = "app.html";
 }
-
 
 function iniciarProjeto() {
   const imagem = localStorage.getItem("imagemModelo");
@@ -246,10 +228,13 @@ function iniciarProjeto() {
   window.location.href = "app.html";
 }
 
-function usarModelo(caminho) {
-  localStorage.setItem("imagemModelo", caminho);
-  alert("Imagem selecionada!");
+function limparProgresso() {
+  gridData.forEach(row =>
+    row.forEach(cell => cell.done = false)
+  );
+  renderGrid();
 }
+
 function apagarImagem() {
   localStorage.removeItem("imagemModelo");
   alert("Imagem removida!");
