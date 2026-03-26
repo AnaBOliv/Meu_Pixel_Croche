@@ -1,46 +1,47 @@
-.home {
-  background: linear-gradient(135deg, #0f7476, #00555a);
-  color: #156874;
-  text-align: center;
-  padding-top: 50px;
+:root {
+  --cor-fundo: #28443F;
+  --cor-principal: #156874;
+  --cor-secundaria: #0f7476;
+  --cor-texto: #C2D8C4;
+  --cor-escura: #222222;
 }
 
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  text-align: center;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Página inicial */
+.home {
+  background: linear-gradient(135deg, var(--cor-secundaria), #00555a);
+}
+
+/* Botão */
 .botao {
   display: inline-block;
   margin-top: 30px;
   padding: 15px 25px;
-  background: #222222;
-  color: #C2D8C4;
+  background: var(--cor-escura);
+  color: var(--cor-texto);
   text-decoration: none;
   border-radius: 8px;
   font-weight: bold;
 }
-body {
-  font-family: Bell MT;
-  text-align: center;
-  background-color: #28443F; /* fundo */
-  color:#156874; /* cor da fonte */
-}
 
-h1 {
-  color: #156874;
-}
-
-#info {
-  margin-top: 10px;
-  font-weight: bold;
-  color: #156874;
-}
-
+/* Grid */
 #grid {
   display: grid;
   gap: 2px;
   justify-content: center;
   margin-top: 20px;
   padding: 10px;
-  background-color: #156874;
-
-  /* 🧩 contorno do “quadro” */
+  background-color: var(--cor-principal);
   border: 3px solid #555;
   border-radius: 5px;
 }
@@ -52,5 +53,15 @@ h1 {
 }
 
 .done {
+  outline: 2px solid #00ff88;
+}
+
+/* Footer discreto */
+footer {
+  margin-top: auto;
+  font-size: 12px;
+  opacity: 0.6;
+  padding: 10px;
+}
   outline: 2px solid #00ff88;
 }
