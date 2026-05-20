@@ -60,19 +60,16 @@
 
 <script>
 function selecionarImagem(caminho) {
-  // Transforma em caminho absoluto
-  const urlCompleta = new URL(caminho, window.location.href).href;
+  console.log("Selecionado:", caminho);
 
-  console.log("Salvando nova imagem:", urlCompleta);
-
-  // Limpa o desenho antigo para não misturar os projetos das imagens!
+  // Remove lixos de sessões anteriores
   localStorage.removeItem("progressoGrid");
   
-  // Salva a nova imagem escolhida
-  localStorage.setItem("imagemModelo", urlCompleta);
+  // Salva o caminho relativo da imagem diretamente
+  localStorage.setItem("imagemModelo", caminho);
 
-  // Redireciona para o App
-  window.location.href = "app.html"; 
+  // Redireciona para o painel de edição
+  window.location.href = "App.html"; 
 }
 </script>
 
