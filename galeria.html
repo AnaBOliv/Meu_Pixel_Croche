@@ -59,19 +59,20 @@
 </div>
 
 <script>
- function selecionarImagem(caminho) {
-
-  // transforma em caminho absoluto
+function selecionarImagem(caminho) {
+  // Transforma em caminho absoluto
   const urlCompleta = new URL(caminho, window.location.href).href;
 
-  console.log("Salvando:", urlCompleta);
+  console.log("Salvando nova imagem:", urlCompleta);
 
+  // Limpa o desenho antigo para não misturar os projetos das imagens!
+  localStorage.removeItem("progressoGrid");
+  
+  // Salva a nova imagem escolhida
   localStorage.setItem("imagemModelo", urlCompleta);
 
-  // pequeno atraso garante salvamento
-  setTimeout(() => {
-    window.location.href = "app.html";
-  }, 100);
+  // Redireciona para o App
+  window.location.href = "app.html"; 
 }
 </script>
 
