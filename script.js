@@ -39,11 +39,16 @@ window.onload = () => {
   const imagemSalva = localStorage.getItem("imagemModelo");
 
   if (progressoSalvo) {
-    const dados = JSON.parse(progressoSalvo);
-    gridData = dados.gridData;
-    gridWidth = dados.gridWidth;
-    gridHeight = dados.gridHeight;
-    renderGrid();
+    try {
+      const dados = JSON.parse(progressoSalvo);
+      gridData = dados.gridData;
+      gridWidth = dados.gridWidth;
+      gridHeight = dados.gridHeight;
+      renderGrid();
+    } catch (e) {
+      console.error("Erro ao ler progresso salvo, carregando imagem limpa.");
+      if (imagemSalva) carregarImagemDaOrigem(imagemSalva);
+    }
   } else if (imagemSalva) {
     carregarImagemDaOrigem(imagemSalva);
   }
@@ -57,7 +62,7 @@ if (qualidadeInput) {
     qualidade = parseInt(e.target.value);
     const imagemSalva = localStorage.getItem("imagemModelo");
     if (imagemSalva) {
-      localStorage.removeItem("progressoGrid"); // Força reprocessar a imagem com a nova qualidade
+      localStorage.removeItem("progressoGrid"); // Força reprocessar
       carregarImagemDaOrigem(imagemSalva);
     }
   });
@@ -87,7 +92,7 @@ function carregarImagemDaOrigem(caminho) {
 
   const img = new Image();
   
-  // Evita problemas de segurança com Canvas ao rodar localmente
+  // Configuração necessária para evitar erros de Canvas rodando localmente (CORS)
   if (!caminho.startsWith('data:')) {
     img.crossOrigin = "Anonymous";
   }
@@ -96,16 +101,12 @@ function carregarImagemDaOrigem(caminho) {
     processarImagem(img);
   };
 
-  img.onerror = () => {
-    console.error("Erro ao carregar a imagem: " + caminho);
+  img.onerror = (err) => {
+    console.error("Erro crítico ao carregar a imagem: ", caminho, err);
+    alert("Não foi possível carregar a imagem. Verifique se o caminho do arquivo está correto.");
   };
 
-  // Adiciona um timestamp para evitar que o navegador use uma imagem do cache antigo
-  if (!caminho.startsWith('data:')) {
-    img.src = caminho + "?t=" + new Date().getTime();
-  } else {
-    img.src = caminho;
-  }
+  img.src = caminho; // Mantido puro sem sufixos para evitar bloqueio local
 }
 
 function processarImagem(img) {
@@ -133,6 +134,7 @@ function processarImagem(img) {
       let g = imageData[i + 1];
       let b = imageData[i + 2];
 
+      // Filtro para linhas muito escuras
       if (r < 40 && g < 40 && b < 40) {
         row.push({ r: 0, g: 0, b: 0, done: false });
         continue;
@@ -153,7 +155,7 @@ function corMaisProxima(r, g, b) {
   let menorDistancia = Infinity;
 
   PALETA.forEach(cor => {
-    const dist = (r - core.r || r - cor.r) ** 2 + (g - cor.g) ** 2 + (b - cor.b) ** 2;
+    const dist = (r - cor.r) ** 2 + (g - cor.g) ** 2 + (b - cor.b) ** 2;
     if (dist < menorDistancia) {
       menorDistancia = dist;
       melhor = cor;
