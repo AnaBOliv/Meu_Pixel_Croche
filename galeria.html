@@ -59,22 +59,20 @@
 </div>
 
 <script>
-  function selecionarImagem(caminho) {
-    console.log("Imagem selecionada:", caminho);
+ function selecionarImagem(caminho) {
 
-    // salva no navegador
-    localStorage.setItem("imagemModelo", caminho);
+  // transforma em caminho absoluto
+  const urlCompleta = new URL(caminho, window.location.href).href;
 
-    // pequena validação
-    const teste = localStorage.getItem("imagemModelo");
-    if (!teste) {
-      alert("Erro ao salvar imagem!");
-      return;
-    }
+  console.log("Salvando:", urlCompleta);
 
-    // redireciona
+  localStorage.setItem("imagemModelo", urlCompleta);
+
+  // pequeno atraso garante salvamento
+  setTimeout(() => {
     window.location.href = "app.html";
-  }
+  }, 100);
+}
 </script>
 
 </body>
