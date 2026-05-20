@@ -16,7 +16,7 @@ let gridHeight = 50;
 let qualidade = qualidadeInput ? parseInt(qualidadeInput.value) : 50;
 
 // ==========================
-// PALETA (Tons de Cinza/Preto/Branco)
+// PALETA
 // ==========================
 const PALETA = [
   { r: 255, g: 255, b: 255 },
@@ -35,7 +35,6 @@ const PALETA = [
 // INICIALIZAÇÃO
 // ==========================
 window.onload = () => {
-  // Tenta carregar o progresso salvo ou uma nova imagem da galeria
   const progressoSalvo = localStorage.getItem("progressoGrid");
   const imagemSalva = localStorage.getItem("imagemModelo");
 
@@ -51,13 +50,16 @@ window.onload = () => {
 };
 
 // ==========================
-// EVENTOS (Qualidade e Upload)
+// EVENTOS
 // ==========================
 if (qualidadeInput) {
   qualidadeInput.addEventListener("change", (e) => {
     qualidade = parseInt(e.target.value);
     const imagemSalva = localStorage.getItem("imagemModelo");
-    if (imagemSalva) carregarImagemDaOrigem(imagemSalva);
+    if (imagemSalva) {
+      localStorage.removeItem("progressoGrid"); // Força reprocessar a imagem com a nova qualidade
+      carregarImagemDaOrigem(imagemSalva);
+    }
   });
 }
 
@@ -68,8 +70,8 @@ if (upload) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const base64Image = e.target.result;
-        localStorage.setItem("imagemModelo", base64Image); // Salva para não sumir no F5
-        localStorage.removeItem("progressoGrid"); // Reseta progresso antigo
+        localStorage.setItem("imagemModelo", base64Image); 
+        localStorage.removeItem("progressoGrid"); // Reseta o desenho antigo
         carregarImagemDaOrigem(base64Image);
       };
       reader.readAsDataURL(file);
@@ -78,13 +80,14 @@ if (upload) {
 }
 
 // ==========================
-// FUNÇÕES DE CARREGAMENTO
+// CARREGAMENTO DA IMAGEM
 // ==========================
 function carregarImagemDaOrigem(caminho) {
   if (!caminho) return;
 
   const img = new Image();
-  // Evita problemas de segurança (CORS) com o Canvas em servidores locais
+  
+  // Evita problemas de segurança com Canvas ao rodar localmente
   if (!caminho.startsWith('data:')) {
     img.crossOrigin = "Anonymous";
   }
@@ -97,7 +100,12 @@ function carregarImagemDaOrigem(caminho) {
     console.error("Erro ao carregar a imagem: " + caminho);
   };
 
-  img.src = caminho;
+  // Adiciona um timestamp para evitar que o navegador use uma imagem do cache antigo
+  if (!caminho.startsWith('data:')) {
+    img.src = caminho + "?t=" + new Date().getTime();
+  } else {
+    img.src = caminho;
+  }
 }
 
 function processarImagem(img) {
@@ -125,7 +133,6 @@ function processarImagem(img) {
       let g = imageData[i + 1];
       let b = imageData[i + 2];
 
-      // Se for muito escuro, vira preto automático
       if (r < 40 && g < 40 && b < 40) {
         row.push({ r: 0, g: 0, b: 0, done: false });
         continue;
@@ -146,7 +153,7 @@ function corMaisProxima(r, g, b) {
   let menorDistancia = Infinity;
 
   PALETA.forEach(cor => {
-    const dist = (r - cor.r) ** 2 + (g - cor.g) ** 2 + (b - cor.b) ** 2;
+    const dist = (r - core.r || r - cor.r) ** 2 + (g - cor.g) ** 2 + (b - cor.b) ** 2;
     if (dist < menorDistancia) {
       menorDistancia = dist;
       melhor = cor;
@@ -156,13 +163,12 @@ function corMaisProxima(r, g, b) {
 }
 
 // ==========================
-// RENDERIZAÇÃO DO GRID (A que estava faltando!)
+// RENDERIZAÇÃO DO GRID
 // ==========================
 function renderGrid() {
   if (!gridContainer) return;
   gridContainer.innerHTML = "";
 
-  // Configura as colunas dinamicamente no CSS do Grid
   gridContainer.style.gridTemplateColumns = `repeat(${gridWidth}, ${cellSize}px)`;
 
   gridData.forEach((row, y) => {
@@ -177,7 +183,6 @@ function renderGrid() {
         div.classList.add("done");
       }
 
-      // Evento de clique para marcar como feito
       div.onclick = () => {
         gridData[y][x].done = !gridData[y][x].done;
         if (gridData[y][x].done) {
@@ -188,7 +193,6 @@ function renderGrid() {
         salvarProgresso();
       };
 
-      // Evento de passar o mouse para mostrar a coordenada
       div.onmouseenter = () => {
         if (info) info.textContent = `Linha: ${y + 1} | Coluna: ${x + 1}`;
       };
@@ -199,7 +203,7 @@ function renderGrid() {
 }
 
 // ==========================
-// CONTROLES E PERSISTÊNCIA
+// CONTROLES
 // ==========================
 function salvarProgresso() {
   localStorage.setItem("progressoGrid", JSON.stringify({ gridData, gridWidth, gridHeight }));
