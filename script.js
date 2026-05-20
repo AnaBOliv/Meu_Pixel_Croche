@@ -87,14 +87,26 @@ function carregarImagemArquivo(file) {
 }
 
 function carregarImagemDaGaleria() {
+
   const caminho = localStorage.getItem("imagemModelo");
 
-  if (!caminho) return;
+  console.log("Imagem salva:", caminho);
+
+  if (!caminho) {
+    console.log("Nenhuma imagem encontrada.");
+    return;
+  }
 
   const img = new Image();
 
   img.onload = () => {
+    console.log("Imagem carregada.");
     processarImagem(img);
+  };
+
+  img.onerror = () => {
+    console.error("Erro ao carregar imagem.");
+    alert("Erro ao abrir imagem.");
   };
 
   img.src = caminho;
