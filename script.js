@@ -179,6 +179,7 @@ function renderGrid() {
       div.classList.add("cell");
       div.style.width = `${cellSize}px`;
       div.style.height = `${cellSize}px`;
+      div.style.boxSizing = "border-box";
       div.style.backgroundColor = `rgb(${cell.r}, ${cell.g}, ${cell.b})`;
       
       if (cell.done) {
