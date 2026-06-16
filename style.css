@@ -76,8 +76,9 @@ button {
   justify-content: center;
   margin-top: 20px;
   padding: 10px;
-  background-color: var(--cor-destaque);
+  background-color: white;
   border-radius: 8px;
+  overflow: auto;
 }
 
 .cell {
